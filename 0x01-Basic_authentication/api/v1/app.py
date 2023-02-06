@@ -12,7 +12,7 @@ from api.v1.auth.basic_auth import BasicAuth
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
-CORS(app, resources={r"/api/vi/*":{"origins": "*"}})
+CORS(app, resources={r"/api/vi/*": {"origins": "*"}})
 auth = None
 auth_type = getenv('AUTH_TYPE', 'auth')
 if auth_type == 'auth':
@@ -20,15 +20,18 @@ if auth_type == 'auth':
 if auth_type == 'basic_auth':
     auth = BasicAuth()
 
+
 @app.errorhandler(404)
 def not_found(error) -> str:
     """Not found"""
     return jsonify({"error": "Not found"}), 404
 
+
 @app.errorhandler(401)
 def unauthorized(error) -> str:
     """unauthorized handler"""
     return jsonify({"error": "Unauthorized"}), 401
+
 
 @app.errorhandler(403)
 def forbidden(error) -> str:
@@ -36,10 +39,11 @@ def forbidden(error) -> str:
     """
     return jsonify({"error": "Forbidden"}), 403
 
+
 @app.before_request
 def authenticate_user():
     """Authenticaates a user before procesing a request."""
-    if auth:a
+    if auth:
         excluded_paths = [
             '/api/v1/status/',
             '/api/v1/unauthorized/',
@@ -52,6 +56,7 @@ def authenticate_user():
                 abort(401)
             if user is None:
                 abort(403)
+
 
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
