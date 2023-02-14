@@ -42,6 +42,14 @@ def valid_login(email: str, password: str) -> bool:
     response.set_cookie("session_id", session_id)
     return response
 
+def create_session(email: str) -> str:
+    """ Create a new session """
+    session_id = _generate_uuid()
+    user = AUTH._db.find_user_by(email=email)
+    user.session_id = session_id
+    AUTH._db._session.commit()
+    return session_id
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
