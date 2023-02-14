@@ -36,6 +36,7 @@ def valid_login(email: str, password: str) -> bool:
     except NoResultFound:
         return False
 
+
 def create_session(email: str) -> str:
     """ Create a new session """
     session_id = _generate_uuid()
