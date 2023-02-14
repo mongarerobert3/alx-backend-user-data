@@ -15,6 +15,7 @@ def welcome() -> str:
     """ Basic Flask app """
     return jsonify({"message": "Bienvenue"})
 
+
 @app.route('/users', methods=['POST'], strict_slashes=False)
 def users() -> str:
     """ Register a user """
@@ -25,7 +26,16 @@ def users() -> str:
         return jsonify({"email": user.email, "message": "user created"})
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
-        
+
+
+def valid_login(email: str, password: str) -> bool:
+    """ Check if login is valid """
+    try:
+        user = AUTH.get_user_from_email(email)
+        return AUTH.valid_login(email, password)
+    except NoResultFound:
+        return False
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000")
