@@ -2,7 +2,7 @@
 """Flask app"""
 
 from flask import Flask, jsonify, request, abort, redirect
-from auth import Auth
+from auth import Auth, _generate_uuid
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
 
@@ -30,17 +30,11 @@ def users() -> str:
 
 def valid_login(email: str, password: str) -> bool:
     """ Check if login is valid """
-    email = request.form.get("email")
-    password = request.form.get("password")
-    valid_user = AUTH.valid_login(email, password)
-
-    if not valid_user:
-        abort(401)
-    session_id = AUTH.create_session(email)
-    message = {"email": email, "message": "logged in"}
-    response = jsonify(message)
-    response.set_cookie("session_id", session_id)
-    return response
+    try:
+        user = AUTH._db.find_user_by(email=email)
+        return AUTH.valid_login(email, password)
+    except NoResultFound:
+        return False
 
 def create_session(email: str) -> str:
     """ Create a new session """
