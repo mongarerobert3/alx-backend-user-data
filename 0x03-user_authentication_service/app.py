@@ -30,11 +30,17 @@ def users() -> str:
 
 def valid_login(email: str, password: str) -> bool:
     """ Check if login is valid """
-    try:
-        user = AUTH.get_user_from_email(email)
-        return AUTH.valid_login(email, password)
-    except NoResultFound:
-        return False
+    email = request.form.get("email")
+    password = request.form.get("password")
+    valid_user = AUTH.valid_login(email, password)
+
+    if not valid_user:
+        abort(401)
+    session_id = AUTH.create_session(email)
+    message = {"email": email, "message": "logged in"}
+    response = jsonify(message)
+    response.set_cookie("session_id", session_id)
+    return response
 
 
 if __name__ == "__main__":
