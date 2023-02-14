@@ -44,3 +44,13 @@ class DB:
             self._session.rollback()
             user = None
         return user
+
+    @property
+    def find_user_by(self, **kwargs) -> User:
+        """Find a user by a given keyword argument
+        """
+        try:
+            user = self._session.query(User).filter_by(**kwargs).one()
+        except NoResultFound:
+            user = None
+        return user
